@@ -6,11 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-
+    <include layout="@layout/app_header"
+        />
     <Button
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below=""
         android:text="Button"
         tools:layout_editor_absoluteX="122dp"
         tools:layout_editor_absoluteY="55dp" />

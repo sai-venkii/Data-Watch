@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AllAppsListActivity extends AppCompatActivity {
-
     private ListView listView;
     private ListAppAdapter adapter;
     @Override
