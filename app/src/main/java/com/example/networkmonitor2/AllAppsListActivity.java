@@ -11,7 +11,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AllAppsList extends AppCompatActivity {
+public class AllAppsListActivity extends AppCompatActivity {
 
     private ListView listView;
     private ListAppAdapter adapter;
