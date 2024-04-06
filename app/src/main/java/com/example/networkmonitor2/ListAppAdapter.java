@@ -12,10 +12,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListAppAdapter extends ArrayAdapter<AppInfo> {
-
+    private List<AppInfo> selectedApps = new ArrayList<>();
     public ListAppAdapter(Context context, int resource, List<AppInfo> appInfo){
         super(context,resource,appInfo);
     }
@@ -36,7 +37,23 @@ public class ListAppAdapter extends ArrayAdapter<AppInfo> {
             iv.setImageDrawable(app.getAppIcon());
         }
 
+        cb.setChecked(app.isSelected());
+        cb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CheckBox checkBox = (CheckBox) v;
+                app.setSelected(checkBox.isChecked());
+                if (checkBox.isChecked()) {
+                    selectedApps.add(app);
+                } else {
+                    selectedApps.remove(app);
+                }
+            }
+        });
         return convertView;
+    }
+    public List<AppInfo> getSelectedApps() {
+        return selectedApps;
     }
 }
 

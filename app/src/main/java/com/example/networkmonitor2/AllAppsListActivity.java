@@ -5,7 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -22,6 +26,18 @@ public class AllAppsListActivity extends AppCompatActivity {
         listView=findViewById(R.id.installed_apps_list);
         adapter = new ListAppAdapter(this,0, installedApps);
         listView.setAdapter(adapter);
+        ImageView tickIcon=(ImageView) findViewById(R.id.tick_icon);
+        tickIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Get selected apps from adapter
+                List<AppInfo> selectedApps = adapter.getSelectedApps();
+                // Log the package names of selected apps
+                for (AppInfo app : selectedApps) {
+                    Log.d("SelectedApp", app.getPackageName());
+                }
+            }
+        });
     }
     private List<AppInfo> getInstalledApps() {
         List<AppInfo> installedApps = new ArrayList<>();
