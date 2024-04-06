@@ -1,14 +1,20 @@
 package com.example.networkmonitor2;
 import android.graphics.drawable.Drawable;
-
-
+import org.parceler.Parcel;
 public class AppInfo {
-    private String appName;
-    private String packageName;
-    private Drawable appIcon;
-    private int uid;
-    private boolean isSelected;
-
+    String appName;
+    String packageName;
+    Drawable appIcon;
+    int uid;
+    boolean isSelected;
+    public AppInfo(){
+    }
+    public AppInfo(String appName, String packageName, int uid) {
+        this.appName = appName;
+        this.packageName = packageName;
+        this.uid = uid;
+        this.isSelected=false;
+    }
     public AppInfo(String appName, String packageName, Drawable appIcon, int uid) {
         this.appName = appName;
         this.packageName = packageName;

@@ -13,10 +13,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ListAppAdapter extends ArrayAdapter<AppInfo> {
-    private List<AppInfo> selectedApps = new ArrayList<>();
+    private List<SelectedApps> selectedApps = new ArrayList<>();
     public ListAppAdapter(Context context, int resource, List<AppInfo> appInfo){
         super(context,resource,appInfo);
     }
@@ -44,15 +45,15 @@ public class ListAppAdapter extends ArrayAdapter<AppInfo> {
                 CheckBox checkBox = (CheckBox) v;
                 app.setSelected(checkBox.isChecked());
                 if (checkBox.isChecked()) {
-                    selectedApps.add(app);
+                    selectedApps.add(new SelectedApps(app.getPackageName(),app.getUid()));
                 } else {
-                    selectedApps.remove(app);
+                    selectedApps.remove(new SelectedApps(app.getPackageName(),app.getUid()));
                 }
             }
         });
         return convertView;
     }
-    public List<AppInfo> getSelectedApps() {
+    public List<SelectedApps> getSelectedApps() {
         return selectedApps;
     }
 }

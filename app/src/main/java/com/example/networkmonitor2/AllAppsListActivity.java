@@ -2,18 +2,24 @@ package com.example.networkmonitor2;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
 
+import org.parceler.Parcels;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AllAppsListActivity extends AppCompatActivity {
     private ListView listView;
@@ -31,11 +37,11 @@ public class AllAppsListActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Get selected apps from adapter
-                List<AppInfo> selectedApps = adapter.getSelectedApps();
-                // Log the package names of selected apps
-                for (AppInfo app : selectedApps) {
-                    Log.d("SelectedApp", app.getPackageName());
-                }
+                List<SelectedApps> selectedApps = adapter.getSelectedApps();
+                Parcelable Selected_apps_parcelable= Parcels.wrap(selectedApps);
+                Intent intent=new Intent(getApplicationContext(),NetworkStatActivity.class);
+                intent.putExtra("Selected Apps",Selected_apps_parcelable);
+                startActivity(intent);
             }
         });
     }
