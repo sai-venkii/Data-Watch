@@ -57,7 +57,7 @@ public class NetworkStatAdapter extends RecyclerView.Adapter<NetworkStatAdapter.
     }
     private long getAppUsage(int uid) {
         long endTime=System.currentTimeMillis();
-        long startTime=endTime-(7*60*60);
+        long startTime=endTime;
         Log.d("NetworkStats", "Start Time: " + startTime + ", End Time: " + endTime);
         NetworkStats networkStats;
         try {
