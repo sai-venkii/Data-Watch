@@ -45,9 +45,9 @@ public class ListAppAdapter extends ArrayAdapter<AppInfo> {
                 CheckBox checkBox = (CheckBox) v;
                 app.setSelected(checkBox.isChecked());
                 if (checkBox.isChecked()) {
-                    selectedApps.add(new SelectedApps(app.getPackageName(),app.getUid()));
+                    selectedApps.add(new SelectedApps(app.getPackageName(),app.getAppName(),app.getUid()));
                 } else {
-                    selectedApps.remove(new SelectedApps(app.getPackageName(),app.getUid()));
+                    selectedApps.remove(new SelectedApps(app.getPackageName(),app.getAppName(),app.getUid()));
                 }
             }
         });

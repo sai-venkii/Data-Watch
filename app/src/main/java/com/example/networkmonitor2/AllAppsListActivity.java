@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.os.Bundle;
@@ -17,12 +18,15 @@ import android.widget.ListView;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class AllAppsListActivity extends AppCompatActivity {
     private ListView listView;
+    PackageManager pm;
     private ListAppAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,16 +51,17 @@ public class AllAppsListActivity extends AppCompatActivity {
     }
     private List<AppInfo> getInstalledApps() {
         List<AppInfo> installedApps = new ArrayList<>();
-        List<PackageInfo> packageList = getPackageManager().getInstalledPackages(0);
+        pm=getPackageManager();
+        List<ApplicationInfo> packageList = pm.getInstalledApplications(PackageManager.GET_META_DATA);
 
-        for (PackageInfo packageInfo : packageList) {
-            ApplicationInfo appInfo = packageInfo.applicationInfo;
-            String appName = appInfo.loadLabel(getPackageManager()).toString();
-            String packageName = packageInfo.packageName;
+        for (ApplicationInfo appInfo : packageList) {
+            String appName = appInfo.loadLabel(pm).toString();
+            String packageName = appInfo.packageName;
             int uid = appInfo.uid;
-            Drawable appIcon = appInfo.loadIcon(getPackageManager());
+            Drawable appIcon = appInfo.loadIcon(pm);
             installedApps.add(new AppInfo(appName, packageName, appIcon,uid));
         }
+        Collections.sort(installedApps);
 
         return installedApps;
     }

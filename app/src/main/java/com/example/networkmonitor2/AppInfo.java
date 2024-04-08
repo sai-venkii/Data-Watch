@@ -1,7 +1,7 @@
 package com.example.networkmonitor2;
 import android.graphics.drawable.Drawable;
 import org.parceler.Parcel;
-public class AppInfo {
+public class AppInfo implements Comparable<AppInfo>{
     String appName;
     String packageName;
     Drawable appIcon;
@@ -44,5 +44,10 @@ public class AppInfo {
 
     public void setSelected(boolean selected) {
         isSelected = selected;
+    }
+    @Override
+    public int compareTo(AppInfo other) {
+        // Implement comparison based on the name attribute
+        return this.appName.compareTo(other.getAppName());
     }
 }
