@@ -30,7 +30,6 @@ public class NetworkStatAdapter extends RecyclerView.Adapter<NetworkStatAdapter.
         this.packageManager = context.getPackageManager();
         this.networkStatsManager = (NetworkStatsManager) context.getSystemService(Context.NETWORK_STATS_SERVICE);
     }
-
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -47,15 +46,17 @@ public class NetworkStatAdapter extends RecyclerView.Adapter<NetworkStatAdapter.
         Log.d("Package Name: ",appName);
         if (uid != -1) {
             long appUsage = getAppUsage(uid);
+            String humanReadable=formatFileSize(appUsage);
             Log.d("Usage","Package Name: "+appName+"Usage: "+appUsage);
             Drawable appIcon = getAppIcon(packageName);
 
             holder.appIcon.setImageDrawable(appIcon);
             holder.packageName.setText(appName);
-            holder.networkUsage.setText("App Usage: " + appUsage + " bytes");
+            holder.networkUsage.setText("App Usage: " + humanReadable);
         }
     }
     private long getAppUsage(int uid) {
+        long totalUsage=0;
         long endTime=System.currentTimeMillis();
         long startTime=endTime;
         Log.d("NetworkStats", "Start Time: " + startTime + ", End Time: " + endTime);
@@ -68,19 +69,30 @@ public class NetworkStatAdapter extends RecyclerView.Adapter<NetworkStatAdapter.
                 networkStats.getNextBucket(bucket);
                 Log.d("Uid: ","Bucket UID: " + bucket.getUid()+" UID: "+uid+"Transmission: "+(bucket.getRxBytes() + bucket.getTxBytes()));
                 if (bucket.getUid() == uid) {
-                    return bucket.getRxBytes() + bucket.getTxBytes();
+                    totalUsage+= bucket.getRxBytes() + bucket.getTxBytes();
                 }
             }
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-        return 0;
-//        long ReceivedBytes=getPackageRxBytesWifi(networkStatsManager,uid,0,System.currentTimeMillis());
-//        long TransmittedBytes=getPackageRxBytesWifi(networkStatsManager,uid,0,System.currentTimeMillis());
-//        Log.d("MYLOG", String.valueOf(ReceivedBytes));
-//        Log.d("MYLOG", String.valueOf(TransmittedBytes));
-//        return ReceivedBytes+TransmittedBytes;
+        return totalUsage;
     }
+    private String formatFileSize(long sizeInBytes) {
+        final long KB = 1024;
+        final long MB = KB * 1024;
+        final long GB = MB * 1024;
+
+        if (sizeInBytes >= GB) {
+            return String.format("%.2f GB", (double) sizeInBytes / GB);
+        } else if (sizeInBytes >= MB) {
+            return String.format("%.2f MB", (double) sizeInBytes / MB);
+        } else if (sizeInBytes >= KB) {
+            return String.format("%.2f KB", (double) sizeInBytes / KB);
+        } else {
+            return sizeInBytes + " bytes";
+        }
+    }
+
     public long getPackageRxBytesWifi(NetworkStatsManager networkStatsManager,int packageUid,long startTime,long endTime) {
         NetworkStats networkStats = null;
         networkStats = networkStatsManager.queryDetailsForUid(

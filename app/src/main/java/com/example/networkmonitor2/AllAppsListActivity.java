@@ -28,11 +28,12 @@ public class AllAppsListActivity extends AppCompatActivity {
     private ListView listView;
     PackageManager pm;
     private ListAppAdapter adapter;
+    List<AppInfo> installedApps;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_apps_list);
-        List<AppInfo> installedApps = getInstalledApps();
+        installedApps = getInstalledApps();
         listView=findViewById(R.id.installed_apps_list);
         adapter = new ListAppAdapter(this,0, installedApps);
         listView.setAdapter(adapter);
@@ -49,6 +50,7 @@ public class AllAppsListActivity extends AppCompatActivity {
             }
         });
     }
+
     private List<AppInfo> getInstalledApps() {
         List<AppInfo> installedApps = new ArrayList<>();
         pm=getPackageManager();

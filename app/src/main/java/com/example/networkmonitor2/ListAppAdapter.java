@@ -25,13 +25,13 @@ public class ListAppAdapter extends ArrayAdapter<AppInfo> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        AppInfo app=getItem(position);
-        if(convertView==null){
-            convertView= LayoutInflater.from(getContext()).inflate(R.layout.single_app_layout,parent,false);
+        AppInfo app = getItem(position);
+        if (convertView == null) {
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.single_app_layout, parent, false);
         }
-        TextView tv=(TextView) convertView.findViewById(R.id.app_name);
-        ImageView iv=(ImageView) convertView.findViewById(R.id.icon);
-        CheckBox cb=(CheckBox) convertView.findViewById(R.id.checkBox);
+        TextView tv = (TextView) convertView.findViewById(R.id.app_name);
+        ImageView iv = (ImageView) convertView.findViewById(R.id.icon);
+        CheckBox cb = (CheckBox) convertView.findViewById(R.id.checkBox);
 
         tv.setText(app.getAppName());
         if (app.getAppIcon() != null) {
@@ -44,10 +44,19 @@ public class ListAppAdapter extends ArrayAdapter<AppInfo> {
             public void onClick(View v) {
                 CheckBox checkBox = (CheckBox) v;
                 app.setSelected(checkBox.isChecked());
-                if (checkBox.isChecked()) {
-                    selectedApps.add(new SelectedApps(app.getPackageName(),app.getAppName(),app.getUid()));
-                } else {
-                    selectedApps.remove(new SelectedApps(app.getPackageName(),app.getAppName(),app.getUid()));
+                boolean appAlreadySelected = false;
+                SelectedApps selectedAppToRemove = null;
+                for (SelectedApps selectedApp : selectedApps) {
+                    if (selectedApp.getPackage_name().equals(app.getPackageName())) {
+                        appAlreadySelected = true;
+                        selectedAppToRemove = selectedApp;
+                        break;
+                    }
+                }
+                if (checkBox.isChecked() && !appAlreadySelected) {
+                    selectedApps.add(new SelectedApps(app.getPackageName(), app.getAppName(), app.getUid()));
+                } else if (!checkBox.isChecked() && appAlreadySelected) {
+                    selectedApps.remove(selectedAppToRemove);
                 }
             }
         });

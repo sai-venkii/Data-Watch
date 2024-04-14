@@ -30,7 +30,6 @@ public class SelectedApps {
     public void setPackage_name(String package_name) {
         this.package_name = package_name;
     }
-
     public int getUid() {
         return uid;
     }
