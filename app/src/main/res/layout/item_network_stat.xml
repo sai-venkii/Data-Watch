@@ -7,13 +7,13 @@
 
     <ImageView
         android:id="@+id/appIcon"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         android:layout_marginEnd="16dp"
         android:contentDescription="@null" />
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical">
@@ -29,7 +29,28 @@
             android:id="@+id/networkUsage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:text="App Usage: "/>
+
+
+<!--        <RelativeLayout-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="match_parent" >-->
+<!--            <TextView-->
+<!--                android:id="@+id/Wifi"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:textSize="14sp"-->
+<!--                android:text="Wifi: "/>-->
+<!--            <TextView-->
+<!--                android:id="@+id/MobileData"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:textSize="14sp"-->
+<!--                android:text="Mobile Data: "-->
+<!--                android:layout_toRightOf="@id/Wifi"-->
+<!--                android:layout_marginLeft="20dp"/>-->
+<!--        </RelativeLayout>-->
 
     </LinearLayout>
 

@@ -45,21 +45,22 @@ public class NetworkStatAdapter extends RecyclerView.Adapter<NetworkStatAdapter.
         int uid = app.getUid();
         Log.d("Package Name: ",appName);
         if (uid != -1) {
-            long appUsage = getAppUsage(uid);
-            String humanReadable=formatFileSize(appUsage);
-            Log.d("Usage","Package Name: "+appName+"Usage: "+appUsage);
+            long endTime=System.currentTimeMillis();
+            long startTime=endTime-(7 * 24 * 60 * 60 * 1000);
+            long wifiUsage = getWifiUsage(uid,startTime,endTime);
+            long mobileUsage = getMobileUsage(uid,startTime,endTime);
+            long totalAppUsage=wifiUsage+mobileUsage;
             Drawable appIcon = getAppIcon(packageName);
 
             holder.appIcon.setImageDrawable(appIcon);
             holder.packageName.setText(appName);
-            holder.networkUsage.setText("App Usage: " + humanReadable);
+            holder.networkUsage.setText("App Usage: " + formatFileSize(totalAppUsage));
+//            holder.wifiUsage.setText("Wifi: "+formatFileSize(wifiUsage));
+//            holder.mobileUsage.setText("Mobile: "+formatFileSize(mobileUsage));
         }
     }
-    private long getAppUsage(int uid) {
-        long totalUsage=0;
-        long endTime=System.currentTimeMillis();
-        long startTime=endTime;
-        Log.d("NetworkStats", "Start Time: " + startTime + ", End Time: " + endTime);
+    private long getWifiUsage(int uid,long startTime,long endTime){
+        long wifiUsage=0;
         NetworkStats networkStats;
         try {
             networkStats = networkStatsManager.querySummary(ConnectivityManager.TYPE_WIFI, "", startTime, endTime);
@@ -69,14 +70,34 @@ public class NetworkStatAdapter extends RecyclerView.Adapter<NetworkStatAdapter.
                 networkStats.getNextBucket(bucket);
                 Log.d("Uid: ","Bucket UID: " + bucket.getUid()+" UID: "+uid+"Transmission: "+(bucket.getRxBytes() + bucket.getTxBytes()));
                 if (bucket.getUid() == uid) {
-                    totalUsage+= bucket.getRxBytes() + bucket.getTxBytes();
+                    wifiUsage+= bucket.getRxBytes() + bucket.getTxBytes();
                 }
             }
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-        return totalUsage;
+        return wifiUsage;
     }
+    private long getMobileUsage(int uid,long startTime,long endTime){
+        long mobileUsage=0;
+        NetworkStats networkStats;
+        try {
+            networkStats = networkStatsManager.querySummary(ConnectivityManager.TYPE_MOBILE, "", startTime, endTime);
+            NetworkStats.Bucket bucket = new NetworkStats.Bucket();
+            Log.d("Bool MobileNetworkStats", "" +networkStats.hasNextBucket());
+            while (networkStats.hasNextBucket()){
+                networkStats.getNextBucket(bucket);
+                Log.d("Uid: ","Bucket UID: " + bucket.getUid()+" UID: "+uid+"Transmission: "+(bucket.getRxBytes() + bucket.getTxBytes()));
+                if (bucket.getUid() == uid) {
+                    mobileUsage+= bucket.getRxBytes() + bucket.getTxBytes();
+                }
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        return mobileUsage;
+    }
+
     private String formatFileSize(long sizeInBytes) {
         final long KB = 1024;
         final long MB = KB * 1024;
@@ -89,41 +110,8 @@ public class NetworkStatAdapter extends RecyclerView.Adapter<NetworkStatAdapter.
         } else if (sizeInBytes >= KB) {
             return String.format("%.2f KB", (double) sizeInBytes / KB);
         } else {
-            return sizeInBytes + " bytes";
+            return sizeInBytes + " B";
         }
-    }
-
-    public long getPackageRxBytesWifi(NetworkStatsManager networkStatsManager,int packageUid,long startTime,long endTime) {
-        NetworkStats networkStats = null;
-        networkStats = networkStatsManager.queryDetailsForUid(
-                ConnectivityManager.TYPE_WIFI,
-                "",
-                startTime,
-                endTime,
-                packageUid);
-        NetworkStats.Bucket bucket = new NetworkStats.Bucket();
-        networkStats.getNextBucket(bucket);
-        return bucket.getRxBytes();
-    }
-    public long getPackageTxBytesWifi(NetworkStatsManager networkStatsManager,int packageUid,long startTime, long endTime) {
-        NetworkStats networkStats = null;
-        networkStats = networkStatsManager.queryDetailsForUid(
-                ConnectivityManager.TYPE_WIFI,
-                "",
-                startTime,
-                endTime,
-                packageUid);
-        NetworkStats.Bucket bucket = new NetworkStats.Bucket();
-        networkStats.getNextBucket(bucket);
-        return bucket.getTxBytes();
-    }
-    private long getStartOfDayInMillis() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        return calendar.getTimeInMillis();
     }
     @Override
     public int getItemCount() {
@@ -143,12 +131,15 @@ public class NetworkStatAdapter extends RecyclerView.Adapter<NetworkStatAdapter.
         ImageView appIcon;
         TextView packageName;
         TextView networkUsage;
-
+        TextView wifiUsage;
+        TextView mobileUsage;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             appIcon = itemView.findViewById(R.id.appIcon);
             packageName = itemView.findViewById(R.id.packageName);
             networkUsage = itemView.findViewById(R.id.networkUsage);
+//            wifiUsage=itemView.findViewById(R.id.Wifi);
+//            mobileUsage=itemView.findViewById(R.id.MobileData);
         }
     }
 }
